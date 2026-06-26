@@ -1,0 +1,17 @@
+name = "cemuc"
+compatibility_date = "2026-06-26"
+pages_build_output_dir = "dist"
+
+[vars]
+APP_ENV = "production"
+APP_NAME = "CEMUC"
+PUBLIC_SITE_URL = "https://cemuc.pages.dev"
+GOOGLE_OAUTH_REDIRECT_URI = "https://cemuc.pages.dev/api/auth/google/callback"
+JWT_COOKIE_NAME = "cemuc_session"
+R2_PUBLIC_BASE_URL = "https://assets.cemuc.com"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cemuc-db"
+database_id = "42eb9708-e000-4e90-a24b-3e2e6406a9fa"
+migrations_dir = "migrations"
