@@ -45,7 +45,7 @@ export const Login: React.FC = () => {
             <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginBottom: '18px' }}>
               O acesso só é liberado se o e-mail Google estiver cadastrado e ativo na secretaria.
             </p>
-            <a href="/api/auth/google" className="btn btn-primary">
+            <a href="/api/auth-google" className="btn btn-primary">
               <LogIn size={18} /> Entrar com Google
             </a>
           </div>

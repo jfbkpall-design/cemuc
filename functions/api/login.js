@@ -4,46 +4,57 @@ import { verifyPassword } from '../_shared/password.js';
 
 export async function onRequestPost({ request, env }) {
   try {
-    // Verifica binding do banco
     if (!env.DB) {
-      console.error('LOGIN_ERROR: env.DB não está disponível');
-      return json({ error: 'Configuração interna inválida (DB)' }, { status: 500 });
+      console.error('ADMIN_LOGIN_ERROR: env.DB ausente');
+      return json({ error: 'Configuracao interna invalida (DB)' }, { status: 500 });
     }
 
     const body = await request.json().catch(() => ({}));
-    const identifier = String(body.email || body.usuario || '').trim().toLowerCase();
-    const senha = String(body.senha || body.password || '');
+    const identifier = String(body.identifier || body.email || body.usuario || '').trim().toLowerCase();
+    const password = String(body.password || body.senha || '');
+    const compactIdentifier = identifier.replace(/\s+/g, '');
+    const aliasIdentifier = compactIdentifier === 'deusesterno' ? 'deuseterno' : compactIdentifier;
 
-    if (!identifier || !senha) {
-      return json({ error: 'Informe usuário/e-mail e senha' }, { status: 400 });
+    console.log('Tentativa de login admin:', identifier || '(vazio)');
+
+    if (!identifier || !password) {
+      return json({ error: 'Informe usuario/e-mail e senha' }, { status: 400 });
     }
 
     const admin = await env.DB.prepare(
       `SELECT id, email, nome, role, senha_hash, status_ativo
        FROM usuarios
-       WHERE (lower(email) = lower(?) OR lower(nome) = lower(?)) AND status_ativo = 1
+       WHERE status_ativo = 1
+         AND (
+           lower(email) = lower(?)
+           OR lower(nome) = lower(?)
+           OR replace(lower(nome), ' ', '') = lower(?)
+           OR replace(lower(nome), ' ', '') = lower(?)
+         )
        LIMIT 1`
-    ).bind(identifier, identifier).first();
+    ).bind(identifier, identifier, compactIdentifier, aliasIdentifier).first();
 
     if (!admin) {
-      return json({ error: 'Credenciais inválidas' }, { status: 401 });
+      console.log('ADMIN_LOGIN_NOT_FOUND:', identifier);
+      return json({ error: 'Credenciais invalidas' }, { status: 401 });
     }
 
     if (!admin.senha_hash) {
-      console.error(`LOGIN_ERROR: usuário ${identifier} não tem senha_hash`);
-      return json({ error: 'Senha não configurada. Contate o administrador.' }, { status: 401 });
+      console.error('ADMIN_LOGIN_NO_PASSWORD_HASH:', admin.id, admin.email);
+      return json({ error: 'Senha nao configurada. Contate o administrador.' }, { status: 401 });
     }
 
-    let senhaOk = false;
+    let passwordOk = false;
     try {
-      senhaOk = await verifyPassword(senha, admin.senha_hash);
-    } catch (cryptoErr) {
-      console.error('LOGIN_ERROR crypto:', cryptoErr?.message || cryptoErr);
+      passwordOk = await verifyPassword(password, admin.senha_hash);
+    } catch (cryptoError) {
+      console.error('ADMIN_LOGIN_CRYPTO_ERROR:', cryptoError?.message || cryptoError);
       return json({ error: 'Erro ao verificar senha. Tente novamente.' }, { status: 500 });
     }
 
-    if (!senhaOk) {
-      return json({ error: 'Credenciais inválidas' }, { status: 401 });
+    if (!passwordOk) {
+      console.log('ADMIN_LOGIN_BAD_PASSWORD:', admin.id, admin.email);
+      return json({ error: 'Credenciais invalidas' }, { status: 401 });
     }
 
     const token = await signJwt(
@@ -75,8 +86,7 @@ export async function onRequestPost({ request, env }) {
       { headers: { 'set-cookie': sessionCookie(env, token) } }
     );
   } catch (error) {
-    console.error('LOGIN_ERROR geral:', error?.message || error, error?.stack);
+    console.error('ADMIN_LOGIN_FATAL:', error?.message || error, error?.stack);
     return json({ error: 'Erro interno no login: ' + (error?.message || 'desconhecido') }, { status: 500 });
   }
 }
-

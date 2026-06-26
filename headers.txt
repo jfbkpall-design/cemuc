@@ -1,0 +1,11 @@
+HTTP/1.1 400 Bad Request
+Date: Fri, 26 Jun 2026 17:53:00 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 43
+Connection: keep-alive
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=WE5lYhZQeyAK%2BadbOu2VfxAmTWw0BZKfPRfBvUU%2BMsfccH2T9jlIVZ1R8YJ38HmMaeOeS49hJJHaasgYbPiVBEO6SQpQtUc3V42ErEqztn0Fa7d0ZEGP%2FnrcWpbB7qGTepiyCnnso%2FJnVYX%2F0MWWH8SXCeFhdtc%3D"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a11e11a708a8f1b4-GRU
+alt-svc: h3=":443"; ma=86400
+
