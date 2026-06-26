@@ -644,23 +644,57 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--gold);
 }
 
-@media (max-width: 576px) {
-  .ministry-jump-list {
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 8px;
-  }
+/* ── iOS / Apple Safe Area & Touch Fixes ──────────────────────── */
 
-  .ministry-jump-list a {
-    flex: 0 0 auto;
-  }
+/* Suporte a notch/Dynamic Island (iPhone 14 Pro etc.) */
+.navbar-header {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+}
 
-  .ministry-grid {
-    grid-template-columns: 1fr;
-  }
+.footer-section {
+  padding-bottom: calc(30px + env(safe-area-inset-bottom));
+}
 
-  .ministry-card p {
-    min-height: auto;
+/* Remove tap highlight azul no iOS */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Inputs e botões no iOS */
+input, textarea, select, button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Mínimo de 44px de altura para botões (guideline Apple HIG) */
+.btn {
+  min-height: 44px;
+}
+
+.mobile-nav-link {
+  min-height: 44px;
+}
+
+/* ── Tablet breakpoint (768px) ────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+  }
+  .mobile-nav-toggle {
+    display: block;
+  }
+  .container {
+    padding: 0 16px;
   }
 }
+
+/* ── Responsividade admin em mobile ──────────────────────────── */
+@media (max-width: 700px) {
+  .container.section > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+

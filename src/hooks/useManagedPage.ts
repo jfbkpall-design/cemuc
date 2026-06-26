@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../services/supabaseClient';
 
 export interface ManagedPageContent {
   headline?: string;
@@ -11,8 +10,18 @@ export interface ManagedPageContent {
   leader2_image?: string;
 }
 
+function parseContent(raw: unknown): ManagedPageContent {
+  if (!raw) return {};
+  if (typeof raw !== 'string') return raw as ManagedPageContent;
+
+  try {
+    return JSON.parse(raw) as ManagedPageContent;
+  } catch {
+    return { body: raw };
+  }
+}
+
 export const useManagedPage = (slug: string, fallback: ManagedPageContent) => {
-  // Inicializa o estado lendo instantaneamente o conteúdo do cache se houver
   const [content, setContent] = useState<ManagedPageContent>(() => {
     try {
       const cached = localStorage.getItem(`cemuc_page_${slug}`);
@@ -27,14 +36,21 @@ export const useManagedPage = (slug: string, fallback: ManagedPageContent) => {
 
     const loadPage = async () => {
       try {
-        const { data } = await supabase
-          .from('system_pages')
-          .select('content')
-          .eq('slug', slug)
-          .single();
+        const response = await fetch(`/api/paginas/${slug}`, {
+          headers: { accept: 'application/json' }
+        });
 
-        if (active && data?.content) {
-          const fetchedContent = data.content as ManagedPageContent;
+        if (!response.ok) return;
+
+        const { data } = await response.json();
+        const fetchedContent = {
+          headline: data.titulo,
+          summary: data.resumo,
+          image_url: data.imagem_capa_url,
+          ...parseContent(data.conteudo)
+        };
+
+        if (active) {
           setContent({ ...fallback, ...fetchedContent });
           localStorage.setItem(`cemuc_page_${slug}`, JSON.stringify(fetchedContent));
         }
@@ -48,7 +64,6 @@ export const useManagedPage = (slug: string, fallback: ManagedPageContent) => {
     return () => {
       active = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   return content;

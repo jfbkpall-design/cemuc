@@ -14,6 +14,7 @@ const Projects = lazy(() => import('./pages/Projects').then((m) => ({ default: m
 const Events = lazy(() => import('./pages/Events').then((m) => ({ default: m.Events })));
 const Prayer = lazy(() => import('./pages/Prayer').then((m) => ({ default: m.Prayer })));
 const Contato = lazy(() => import('./pages/Contato').then((m) => ({ default: m.Contato })));
+const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })));
 const MemberArea = lazy(() => import('./pages/MemberArea').then((m) => ({ default: m.MemberArea })));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="/eventos" element={<Events />} />
             <Route path="/oracao" element={<Prayer />} />
             <Route path="/contato" element={<Contato />} />
+            <Route path="/login" element={<Login />} />
             
             {/* Rota Protegida: Área de Membros */}
             <Route 

@@ -1,0 +1,22 @@
+name = "cemuc"
+compatibility_date = "2026-06-26"
+pages_build_output_dir = "dist"
+
+[vars]
+APP_ENV = "production"
+APP_NAME = "CEMUC"
+PUBLIC_SITE_URL = "https://cemuc.pages.dev"
+GOOGLE_OAUTH_REDIRECT_PATH = "/api/auth/google/callback"
+JWT_COOKIE_NAME = "cemuc_session"
+R2_PUBLIC_BASE_URL = "https://assets.cemuc.com"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cemuc-db"
+database_id = "REPLACE_WITH_CLOUDFLARE_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "cemuc-media"
+preview_bucket_name = "cemuc-media-preview"

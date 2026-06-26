@@ -18,7 +18,7 @@ const publicNavItems = [
 ];
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { profile, signInWithGoogle, signOut } = useAuth();
+  const { profile, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -43,15 +43,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       navigate('/');
     } catch (e) {
       console.error('Erro ao sair:', e);
-    }
-  };
-
-  const handleLogin = async () => {
-    try {
-      closeMobileMenu();
-      await signInWithGoogle();
-    } catch (e) {
-      console.error('Erro ao fazer login:', e);
     }
   };
 
@@ -97,9 +88,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </>
               ) : (
                 <li>
-                  <button onClick={handleLogin} className="btn btn-primary nav-action-btn">
+                  <Link to="/login" className="btn btn-primary nav-action-btn">
                     <LogIn size={15} /> Entrar
-                  </button>
+                  </Link>
                 </li>
               )}
             </ul>
@@ -157,9 +148,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </button>
                   </>
                 ) : (
-                  <button onClick={handleLogin} className="btn btn-primary">
+                  <Link to="/login" className="btn btn-primary" onClick={closeMobileMenu}>
                     <LogIn size={16} /> Entrar com Google
-                  </button>
+                  </Link>
                 )}
               </div>
             </aside>
