@@ -1,0 +1,6 @@
+{
+  "appId": "com.cemuc.app",
+  "appName": "CEMUC",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

@@ -1,0 +1,27 @@
+name: Manter Supabase Ativo
+
+# Evita que o projeto Supabase free-tier hiberne (e fique lento na 1ª requisição).
+# Roda a cada 3 dias. Também pode ser disparado manualmente na aba "Actions".
+#
+# Pré-requisito: cadastre os secrets do repositório (Settings > Secrets and variables > Actions):
+#   - VITE_SUPABASE_URL
+#   - VITE_SUPABASE_ANON_KEY
+
+on:
+  schedule:
+    - cron: '0 6 */3 * *' # 06:00 UTC, a cada 3 dias
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Pingar Supabase
+        run: node scripts/keep-supabase-alive.mjs
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
